@@ -228,7 +228,7 @@ if (__name__ == "__main__"):
     parser.add_argument("output")
     parser.add_argument("-D", metavar="Variable", action="append",
                         dest="variables", default=[], help="Set config value")
-    parser.add_argument("--debug", action="store_const",
+    parser.add_argument("--debug", action="store_true",
                         help="Enable debug log level")
     parser.add_argument("--tape_width", default=76, type=int)
     args = parser.parse_args()

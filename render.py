@@ -242,7 +242,7 @@ if (__name__ == "__main__"):
                         dest="variables", default=[], help="Set config value")
     parser.add_argument("--debug", action="store_true",
                         help="Enable debug log level")
-    parser.add_argument("--tape_width", default=76, type=int)
+    parser.add_argument("--tape-width", default=76, type=int)
     args = parser.parse_args()
 
     # Set log levels

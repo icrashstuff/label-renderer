@@ -49,12 +49,36 @@ class render_result_t():
         self.col_fg = None
         self.col_bg = None
 
+
+ENV_C = {"LANG": "C.UTF-8",
+         "LANGUAGE": "C",
+         "LC_CTYPE": "C.UTF-8",
+         "LC_NUMERIC": "C.UTF-8",
+         "LC_TIME": "C.UTF-8",
+         "LC_COLLATE": "C.UTF-8",
+         "LC_MONETARY": "C.UTF-8",
+         "LC_MESSAGES": "C.UTF-8",
+         "LC_PAPER": "C.UTF-8",
+         "LC_NAME": "C.UTF-8",
+         "LC_ADDRESS": "C.UTF-8",
+         "LC_TELEPHONE": "C.UTF-8",
+         "LC_MEASUREMENT": "C.UTF-8",
+         "LC_IDENTIFICATION": "C.UTF-8",
+         "LC_ALL": "C.UTF-8",
+         }
+
+
 def fc_match(pattern):
-    proc = subprocess.run(["fc-match", "-f", "%{file}", pattern], capture_output=True)
-    if(proc.returncode == 0 and not proc.stdout.endswith(b"\n")):
+    proc = subprocess.run(["fc-match",
+                           "-f", "%{file}",
+                           pattern],
+                          capture_output=True,
+                          env=ENV_C)
+    if (proc.returncode == 0 and not proc.stdout.endswith(b"\n")):
         return proc.stdout.decode("utf-8")
     else:
         return None
+
 
 def render_commands(command_list: list[str],
                     variables: dict[str],

@@ -21,7 +21,13 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 # FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 # DEALINGS IN THE SOFTWARE.
+#
+# Requires:
+# - Python standard library
+# - pillow
+# - font-config.py
 from PIL import Image, ImageDraw, ImageFont, ImageDraw
+import fontconfig
 import logging
 import re
 logger = logging.getLogger(__name__)
@@ -120,6 +126,12 @@ def render_commands(command_list: list[str],
         elif (cmd[0] == "ALIGN"):
             align_mode = cmd[1].lower()
         elif (cmd[0] == "FONT"):
+            font_match = fontconfig.match(cmd[1])
+            if(not font_match):
+                return render_result_t(f"Unable to find font for pattern '{cmd[1]}'")
+            logger.debug(f"Resolving font pattern '{cmd[1]}' to '{font_match["file"]}'")
+            font = font_match["file"]
+        elif (cmd[0] == "FONTFILE"):
             font = cmd[1]
         elif (cmd[0] == "NEWLINE" or (cmd[0] == "TEXT" and len(lines) == 0)):
             s = cmd[2]

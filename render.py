@@ -164,7 +164,10 @@ def render_commands(command_list: list[str],
         elif (cmd[0] == "FONTFILE"):
             font = cmd[1]
         elif (cmd[0] == "NEWLINE" or (cmd[0] == "TEXT" and len(lines) == 0)):
-            s = cmd[2]
+            if (len(cmd) > 2):
+                s = cmd[2]
+            else:
+                s = ""
             while ((m := re.search(r"\${(?P<var_name>[^}]*)}", s)) is not None):
                 varname = m.group("var_name")
                 if (varname not in variables):
@@ -178,7 +181,17 @@ def render_commands(command_list: list[str],
                 "text": s
             })
         elif (cmd[0] == "TEXT"):
-            lines[-1]["text"] += cmd[2]
+            if (len(cmd) > 2):
+                s = cmd[2]
+            else:
+                s = ""
+            while ((m := re.search(r"\${(?P<var_name>[^}]*)}", s)) is not None):
+                varname = m.group("var_name")
+                if (varname not in variables):
+                    return render_result_t(f"Unknown variable '{varname}'")
+                value = variables[varname]
+                s = s[:m.start()] + value + s[m.end():]
+            lines[-1]["text"] += s
         elif (cmd[0] == "BLOCK" or cmd[0] == "SPACING"):
             render_requested = True
         else:

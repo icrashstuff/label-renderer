@@ -157,9 +157,10 @@ def render_commands(command_list: list[str],
             align_mode = cmd[1].lower()
         elif (cmd[0] == "FONT"):
             font_match = fc_match(cmd[1])
-            if(not font_match):
+            if (not font_match):
                 return render_result_t(f"Unable to find font for pattern '{cmd[1]}'")
-            logger.debug(f"Resolving font pattern '{cmd[1]}' to '{font_match}'")
+            logger.debug(
+                f"Resolving font pattern '{cmd[1]}' to '{font_match}'")
             font = font_match
         elif (cmd[0] == "FONTFILE"):
             font = cmd[1]

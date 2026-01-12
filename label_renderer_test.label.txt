@@ -24,7 +24,7 @@ SPACING	0.125
 
 BLOCK
 ALIGN	LEFT
-FONT	DejaVuSans:style=Bold
+FONT	DejaVuSans:style=Normal
 
 # CMD	WEIGHT	TEXT
 TEXT	1	${HEADER_TYPE} Headers

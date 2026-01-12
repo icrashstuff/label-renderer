@@ -25,9 +25,9 @@
 # Requires:
 # - Python standard library
 # - pillow
-# - font-config.py
+# - fc-match (Command from fontconfig)
 from PIL import Image, ImageDraw, ImageFont, ImageDraw
-import fontconfig
+import subprocess
 import logging
 import re
 logger = logging.getLogger(__name__)
@@ -49,6 +49,12 @@ class render_result_t():
         self.col_fg = None
         self.col_bg = None
 
+def fc_match(pattern):
+    proc = subprocess.run(["fc-match", "-f", "%{file}", pattern], capture_output=True)
+    if(proc.returncode == 0 and not proc.stdout.endswith(b"\n")):
+        return proc.stdout.decode("utf-8")
+    else:
+        return None
 
 def render_commands(command_list: list[str],
                     variables: dict[str],
@@ -126,11 +132,11 @@ def render_commands(command_list: list[str],
         elif (cmd[0] == "ALIGN"):
             align_mode = cmd[1].lower()
         elif (cmd[0] == "FONT"):
-            font_match = fontconfig.match(cmd[1])
+            font_match = fc_match(cmd[1])
             if(not font_match):
                 return render_result_t(f"Unable to find font for pattern '{cmd[1]}'")
-            logger.debug(f"Resolving font pattern '{cmd[1]}' to '{font_match["file"]}'")
-            font = font_match["file"]
+            logger.debug(f"Resolving font pattern '{cmd[1]}' to '{font_match}'")
+            font = font_match
         elif (cmd[0] == "FONTFILE"):
             font = cmd[1]
         elif (cmd[0] == "NEWLINE" or (cmd[0] == "TEXT" and len(lines) == 0)):

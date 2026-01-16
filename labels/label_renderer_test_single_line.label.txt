@@ -1,0 +1,29 @@
+ICRASHSTUFF-LABEL-RENDERER-FILE:1
+# kate: indent-width 8; replace-tabs false; replace-tabs-save false; show-tabs true; tab-indents true; tab-width 8;
+# BASH/Shell script highlighting will work fine for this document
+#
+# Any line that starts with a '#' (hash) is a comment and is ignored by the label renderer
+# NOTE: Any '#' (hash) characters that appear elsewhere are treated as part of the command or it's arguments
+#
+# File is organized as a series of commands with parameters separated by '\t' tab characters
+# NOTE: Successive '\t' tab characters are treated as one '\t' tab character
+# Example:
+# CMD1	PARAM1	PARAM2
+# CMD2
+# CMD3	PARAM1
+
+BACKGROUND	white
+FOREGROUND	black
+
+SPACING	0.1875
+
+BLOCK
+ALIGN	LEFT
+FONT	Roboto:style=Medium
+
+# CMD	WEIGHT	TEXT
+NEWLINE	5
+NEWLINE	6	C13 Connectors
+NEWLINE	5
+
+SPACING	0.1875

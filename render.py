@@ -286,13 +286,33 @@ if (__name__ == "__main__"):
                         dest="variables", default=[], help="Set config value")
     parser.add_argument("--debug", action="store_true",
                         help="Enable debug log level")
-    parser.add_argument("--tape-width", default=76, type=int)
+    parser.add_argument("--tape-width", default=76, type=int,
+                        help="Tape width in pixels (ignored when --ptouch is active)")
+    parser.add_argument("--ptouch", action='store_true',
+                        help="Integrate with ptouch-print")
+    parser.add_argument("--ptouch-chain", action='store_true',
+                        help="Skip final feed of label and any automatic cut")
+    parser.add_argument("--ptouch-copies", default=1, type=int,
+                        help="Number of copies to send to printer")
+    parser.add_argument("--ptouch-print", action='store_true',
+                        help="Print with ptouch-print (implies --ptouch)")
     args = parser.parse_args()
 
     # Set log levels
     if (args.debug):
         logger.info("Debug logging enabled")
         logger.setLevel(logging.DEBUG)
+
+    if (args.ptouch_print):
+        args.ptouch = True
+
+    if (args.ptouch):
+        import ptouch
+        ptouch_info = ptouch.ptouch_get_info()
+        if (ptouch_info is None):
+            logger.error("ptouch_get_info() failed")
+            sys.exit(1)
+        args.tape_width = ptouch_info.media_width_px
 
     # Split out config variables
     defs = {}
@@ -321,11 +341,17 @@ if (__name__ == "__main__"):
         logger.error(f"Input file '{filename_in}' not found!")
         sys.exit(1)
 
+    logger.info(f"Tape width is {args.tape_width}px")
+
     # Render label
     r = render_commands(commands, defs, args.tape_width)
 
     if (r.ok):  # Save image
         r.out.save(filename_out)
+        if (args.ptouch_print):
+            ptouch.ptouch_print(r.out,
+                                copies=args.ptouch_copies,
+                                chain=args.ptouch_chain)
     else:  # Log rendering error
         logger.error("Error rendering commands")
         logger.error(r.msg)
